@@ -1,0 +1,28 @@
+<svg width="1200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sneeuwberg links -->
+  <path d="M0,300 L350,100 L500,200 L650,120 L800,250 L1000,50 L1200,180 L1200,300 Z" fill="#e0ebff" />
+  
+  <!-- Donkere bergvorm midden -->
+  <path d="M0,300 L200,200 L400,250 L600,150 L800,230 L1000,180 L1200,250 L1200,300 Z" fill="#3a4b5c" />
+  
+  <!-- Pijnbomen op de voorgrond -->
+  <g fill="#2d5540">
+    <path d="M100,270 L110,230 L120,270 Z" />
+    <path d="M105,240 L115,210 L125,240 Z" />
+    <path d="M110,220 L120,190 L130,220 Z" />
+    <rect x="117" y="270" width="6" height="30" />
+    
+    <path d="M600,280 L610,240 L620,280 Z" />
+    <path d="M605,250 L615,220 L625,250 Z" />
+    <path d="M610,230 L620,200 L630,230 Z" />
+    <rect x="617" y="280" width="6" height="20" />
+    
+    <path d="M900,290 L910,250 L920,290 Z" />
+    <path d="M905,260 L915,230 L925,260 Z" />
+    <path d="M910,240 L920,210 L930,240 Z" />
+    <rect x="917" y="290" width="6" height="10" />
+  </g>
+  
+  <!-- Skipiste (subtiel) -->
+  <path d="M400,300 C600,280 700,250 900,150 L950,180 C750,280 650,290 400,300 Z" fill="#f0f5ff" opacity="0.5" />
+</svg> 

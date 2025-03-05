@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 240, 245, 255;
+  --background-end-rgb: 224, 235, 255;
+  
+  /* Ski-piste kleuren */
+  --green-piste: #4CAF50;
+  --blue-piste: #2196F3;
+  --red-piste: #F44336;
+  --black-piste: #212121;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-mountain text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all font-bold shadow-md active:shadow-sm active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-mountain focus:ring-opacity-50;
+  }
+  
+  .btn-secondary {
+    @apply bg-sky-blue text-mountain px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all font-bold shadow-md active:shadow-sm active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-sky-blue focus:ring-opacity-50;
+  }
+  
+  .answer-btn {
+    @apply bg-white text-mountain px-4 py-3 rounded-lg hover:bg-snow transition-all font-bold shadow-md text-xl w-full border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-sky-blue active:shadow-sm active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .snow-container {
+    @apply bg-gradient-to-b from-sky-blue to-ice rounded-xl shadow-lg border border-white max-w-md mx-auto w-full;
+  }
+  
+  .input-field {
+    @apply px-4 py-2 rounded-lg border-2 border-sky-blue focus:outline-none focus:border-mountain text-xl w-full text-center;
+  }
+  
+  /* Ski piste thema's */
+  .theme-green-piste {
+    --theme-color: var(--green-piste);
+    @apply bg-gradient-to-b from-green-100 to-green-200;
+  }
+  
+  .theme-blue-piste {
+    --theme-color: var(--blue-piste);
+    @apply bg-gradient-to-b from-blue-100 to-blue-200;
+  }
+  
+  .theme-red-piste {
+    --theme-color: var(--red-piste);
+    @apply bg-gradient-to-b from-red-100 to-red-200;
+  }
+  
+  .theme-black-piste {
+    --theme-color: var(--black-piste);
+    @apply bg-gradient-to-b from-gray-700 to-gray-900 text-white;
+  }
+  
+  /* Knop varianten per thema */
+  .theme-green-piste .theme-btn {
+    @apply bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none active:bg-green-800;
+  }
+  
+  .theme-blue-piste .theme-btn {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none active:bg-blue-800;
+  }
+  
+  .theme-red-piste .theme-btn {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 focus:outline-none active:bg-red-800;
+  }
+  
+  .theme-black-piste .theme-btn {
+    @apply bg-black text-white hover:bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:outline-none active:bg-gray-900;
+  }
+}
+
+.mountain-bg {
+  background-image: url('/images/mountain.svg');
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: contain;
+  width: 100%;
+  max-width: 100vw;
+} 
