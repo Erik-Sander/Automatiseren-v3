@@ -434,9 +434,13 @@ export default function Game() {
       if (newStreak % 10 === 0 && level < DIFFICULTY_LEVELS.length - 1) {
         setLevel(prev => prev + 1);
         console.log(`Level verhoogd naar ${level + 1} (${DIFFICULTY_LEVELS[level + 1].name}) na ${newStreak} correcte antwoorden op rij`);
+        
+        // Toon altijd een aanmoediging bij een level-up, ongeacht de 50% kans
+        showFamilyEncouragementUI('level', DIFFICULTY_LEVELS[level + 1].name);
+        showEncouragement = true;
       }
       
-      // Bepaal of er een aanmoediging moet komen
+      // Bepaal of er een aanmoediging moet komen (alleen als er nog geen level-up aanmoediging is)
       if (!showEncouragement && !showFamilyEncouragement && !showPhotoReward) {
         // Verminder de frequentie van aanmoedigingen
         const shouldShowEncouragement = Math.random() < 0.5; // 50% kans om een aanmoediging te tonen
@@ -454,17 +458,13 @@ export default function Game() {
           }
           // 3. Nieuw skiërsniveau bereikt (alleen bij veelvouden van 5)
           else if (newStreak % 5 === 0 && newStreak > 0 && skierSkill < 4) {
-            showFamilyEncouragementUI('streak');
+            showFamilyEncouragementUI('streak', DIFFICULTY_LEVELS[level].name);
             showEncouragement = true;
           }
-          // 4. Niveau omhoog (alleen bij veelvouden van 10)
-          else if (newStreak % 10 === 0 && newStreak > 0 && level < DIFFICULTY_LEVELS.length - 1) {
-            showFamilyEncouragementUI('level');
-            showEncouragement = true;
-          }
+          // 4. Niveau omhoog is al eerder afgehandeld, dus deze conditie is niet meer nodig
           // 5. Uitzonderlijk snel antwoord (verlaagde kans)
           else if ((isExceptionallyFast || isMuchFasterThanAverage) && Math.random() < 0.1) {
-            showFamilyEncouragementUI('streak');
+            showFamilyEncouragementUI('streak', DIFFICULTY_LEVELS[level].name);
             showEncouragement = true;
           }
         }
@@ -511,9 +511,13 @@ export default function Game() {
   };
   
   // 4. TOON AANMOEDIGINGEN
-  const showFamilyEncouragementUI = (type: 'streak' | 'level' | 'milestone' | 'score') => {
-    console.log("Familie aanmoediging tonen:", type);
+  const showFamilyEncouragementUI = (type: 'streak' | 'level' | 'milestone' | 'score', levelName?: string) => {
+    console.log("Familie aanmoediging tonen:", type, levelName ? `voor nieuwe piste: ${levelName}` : '');
     setAchievementType(type);
+    // Sla de naam van de nieuwe piste op als het een level-up is
+    if (type === 'level' && levelName) {
+      setPhotoAchievement(levelName);
+    }
     setShowFamilyEncouragement(true);
     setIsPaused(true);
   };
@@ -792,6 +796,7 @@ export default function Game() {
         show={showFamilyEncouragement}
         onComplete={handleFamilyEncouragementComplete}
         achievementType={achievementType}
+        pisteName={photoAchievement}
       />
       
       {/* Foto beloning popup */}

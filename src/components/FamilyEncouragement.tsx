@@ -97,12 +97,14 @@ interface FamilyEncouragementProps {
   show: boolean;
   onComplete: () => void;
   achievementType: 'streak' | 'level' | 'milestone' | 'score';
+  pisteName?: string; // Optionele naam van de piste voor level-up berichten
 }
 
 const FamilyEncouragement: React.FC<FamilyEncouragementProps> = ({ 
   show, 
   onComplete,
-  achievementType 
+  achievementType,
+  pisteName 
 }) => {
   // Kies willekeurig een familielid
   const randomMember = familyMembers[Math.floor(Math.random() * familyMembers.length)];
@@ -122,7 +124,9 @@ const FamilyEncouragement: React.FC<FamilyEncouragementProps> = ({
   if (achievementType === 'streak') {
     specialMessage = 'Je hebt een geweldige reeks goede antwoorden!';
   } else if (achievementType === 'level') {
-    specialMessage = 'Je bent een niveau omhoog gegaan!';
+    specialMessage = pisteName 
+      ? `Je bent een niveau omhoog gegaan naar de ${pisteName}!` 
+      : 'Je bent een niveau omhoog gegaan!';
   } else if (achievementType === 'score') {
     specialMessage = 'Je hebt een geweldige score behaald!';
   } else {
