@@ -96,7 +96,7 @@ const locationReferences = [
 interface FamilyEncouragementProps {
   show: boolean;
   onComplete: () => void;
-  achievementType: 'streak' | 'level' | 'milestone';
+  achievementType: 'streak' | 'level' | 'milestone' | 'score';
 }
 
 const FamilyEncouragement: React.FC<FamilyEncouragementProps> = ({ 
@@ -123,6 +123,8 @@ const FamilyEncouragement: React.FC<FamilyEncouragementProps> = ({
     specialMessage = 'Je hebt een geweldige reeks goede antwoorden!';
   } else if (achievementType === 'level') {
     specialMessage = 'Je bent een niveau omhoog gegaan!';
+  } else if (achievementType === 'score') {
+    specialMessage = 'Je hebt een geweldige score behaald!';
   } else {
     specialMessage = 'Wat een bijzondere prestatie!';
   }
