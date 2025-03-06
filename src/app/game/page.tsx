@@ -29,6 +29,11 @@ interface Encouragement {
   achievementType?: 'streak' | 'level' | 'milestone' | 'score';
 }
 
+// Personalisatie: Speciale berichten per niveau
+interface LevelQuestion extends Question {
+  level: number; // Het niveau waarbij deze vraag hoort (0-4)
+}
+
 // Verschillende niveaus van moeilijkheid met kleurthema's
 const DIFFICULTY_LEVELS = [
   { name: 'Beginnershelling', range: [1, 10], operations: ['+'], timeLimit: 6, theme: 'theme-green-piste' },
@@ -38,63 +43,74 @@ const DIFFICULTY_LEVELS = [
   { name: 'Off-piste', range: [10, 100], operations: ['+', '-', 'x', '÷'], timeLimit: 12, theme: 'theme-black-piste' }
 ];
 
-// Personalisatie: Speciale berichten
-const PERSONAL_QUESTIONS = [
-  // Niveau 0 (Beginnershelling): antwoorden <= 10
-  { text: `Als jij 7 jaar bent en Joep is 3 jaar jonger, hoeveel is Joep dan?`, answer: 4 },
-  { text: `Als papa 42 jaar is en mama 39, hoeveel jaar schelen ze dan?`, answer: 3 },
-  { text: `Je hebt 3 appels en krijgt er 4 bij. Hoeveel appels heb je nu?`, answer: 7 },
-  { text: `Er zitten 8 vogels in een boom. 3 vogels vliegen weg. Hoeveel vogels blijven er in de boom?`, answer: 5 },
-  { text: `Je hebt 9 potloden. Je verliest er 3. Hoeveel potloden heb je nog over?`, answer: 6 },
-  { text: `Als je 2 euro zakgeld krijgt en je koopt een ijsje van 1 euro, hoeveel geld houd je over?`, answer: 1 },
-  { text: `Je hebt 4 rode en 5 blauwe lego-blokjes. Hoeveel blokjes heb je in totaal?`, answer: 9 },
-  { text: `Je hebt 10 snoepjes en geeft 2 aan je broertje en 2 aan je zusje. Hoeveel snoepjes houd je zelf?`, answer: 6 },
-  { text: `Als je op de Rietendakschool 3 vrienden hebt en thuis in Utrecht nog 5, hoeveel vrienden heb je dan in totaal?`, answer: 8 },
-  // Nieuwe vragen voor niveau 0
-  { text: `Je hebt 2 rode ballonnen en 5 blauwe ballonnen. Hoeveel ballonnen heb je in totaal?`, answer: 7 },
-  { text: `Er liggen 10 koekjes op tafel. Je eet er 4 op. Hoeveel koekjes blijven er over?`, answer: 6 },
-  { text: `Je hebt 3 euro en krijgt 5 euro van oma. Hoeveel euro heb je nu?`, answer: 8 },
-  { text: `Er zitten 6 kinderen in een bus. Bij de halte stappen 2 kinderen uit. Hoeveel kinderen zitten er nog in de bus?`, answer: 4 },
-  { text: `Je hebt 7 stickers. Je geeft er 3 aan je vriend. Hoeveel stickers houd je over?`, answer: 4 },
-  
-  // Niveau 1 (Blauwe piste): antwoorden tussen 11-20
-  { text: `${CHILD_NAME}, hoeveel is 4 tafels van 5?`, answer: 20 },
-  { text: `Als je 15 knikkers hebt en je geeft er 7 aan Joep, hoeveel houd je zelf over?`, answer: 8 },
-  { text: `Er staan 7 koeien in de wei. Er komen 5 koeien bij. Hoeveel koeien staan er nu in de wei?`, answer: 12 },
-  { text: `In een doos zitten 6 rode en 7 blauwe ballen. Hoeveel ballen zitten er in totaal in de doos?`, answer: 13 },
-  // Nieuwe vragen voor niveau 1
-  { text: `In de klas zitten 8 jongens en 9 meisjes. Hoeveel kinderen zitten er in totaal in de klas?`, answer: 17 },
-  { text: `Je hebt 12 kleurpotloden. Je leent er 2 uit aan je vriend. Hoeveel kleurpotloden heb je nog over?`, answer: 10 },
-  { text: `Er staan 15 glazen op tafel. 4 glazen vallen en breken. Hoeveel glazen blijven er heel?`, answer: 11 },
-  { text: `Je hebt 7 euro. Een boek kost 14 euro. Hoeveel euro kom je tekort?`, answer: 7 },
-  { text: `Er zitten 20 kinderen in de klas. 6 kinderen zijn ziek. Hoeveel kinderen zijn er op school?`, answer: 14 },
-  
-  // Niveau 2 (Rode piste): antwoorden tussen 21-50
-  { text: `${CHILD_NAME}, hoeveel leerlingen zitten er in je klas als er 14 jongens en 12 meisjes zijn?`, answer: 26 },
-  { text: `Als je op de Rietendakschool om half 9 begint en om 3 uur uit bent, hoeveel uur zit je dan op school?`, answer: 6 },
-  // Nieuwe vragen voor niveau 2
-  { text: `Een voetbalteam heeft 11 spelers. Hoeveel spelers hebben 2 teams samen?`, answer: 22 },
-  { text: `Een boek heeft 42 pagina's. Je hebt al 15 pagina's gelezen. Hoeveel pagina's moet je nog lezen?`, answer: 27 },
-  { text: `In een bioscoop zijn 50 stoelen. Er zijn 32 mensen binnen. Hoeveel stoelen zijn er nog vrij?`, answer: 18 },
-  { text: `Een doos met 24 ijsjes kost 36 euro. Hoeveel kosten 8 ijsjes?`, answer: 12 },
-  { text: `Je spaart voor een spelcomputer van 50 euro. Je hebt al 25 euro gespaard. Hoeveel euro heb je nog nodig?`, answer: 25 },
-  
-  // Niveau 3 (Zwarte piste): antwoorden tussen 51-100
-  { text: `Als oma Marja 68 jaar is en jij bent 7, hoeveel jaar is oma Marja ouder dan jij?`, answer: 61 },
-  // Nieuwe vragen voor niveau 3
-  { text: `Een trein heeft 8 wagons met elk 9 zitplaatsen. Hoeveel zitplaatsen zijn er in totaal?`, answer: 72 },
-  { text: `Een boek heeft 100 pagina's. Je hebt al 35 pagina's gelezen. Hoeveel pagina's moet je nog lezen?`, answer: 65 },
-  { text: `Een school heeft 3 groepen met elk 18 leerlingen. Hoeveel leerlingen zitten er in totaal op de school?`, answer: 54 },
-  { text: `Een auto rijdt 90 kilometer per uur. Hoeveel kilometer rijdt de auto in een half uur?`, answer: 45 },
-  { text: `Een grote doos bevat 6 kleine dozen. In elke kleine doos zitten 12 potloden. Hoeveel potloden zitten er in totaal in de grote doos?`, answer: 72 },
-  
-  // Niveau 4 (Off-piste): moeilijkere vragen
-  // Nieuwe vragen voor niveau 4
-  { text: `Een bakker bakt 120 broden. Hij verkoopt er 85. Hoeveel broden heeft hij over?`, answer: 35 },
-  { text: `Een trein vertrekt om 14:45 uur en komt aan om 16:30 uur. Hoe lang duurt de reis in minuten?`, answer: 105 },
-  { text: `Een boer heeft 48 koeien. Hij koopt er 25 bij en verkoopt er 18. Hoeveel koeien heeft hij nu?`, answer: 55 },
-  { text: `Een school heeft 4 groepen met elk 22 leerlingen. Hoeveel leerlingen zitten er in totaal op de school?`, answer: 88 },
-  { text: `Een fietser rijdt 20 kilometer per uur. Hoeveel kilometer fietst hij in 4,5 uur?`, answer: 90 }
+// Niveau 0 (Beginnershelling): antwoorden <= 10
+const LEVEL0_QUESTIONS: LevelQuestion[] = [
+  { text: `Als jij 7 jaar bent en Joep is 3 jaar jonger, hoeveel is Joep dan?`, answer: 4, level: 0 },
+  { text: `Als papa 42 jaar is en mama 39, hoeveel jaar schelen ze dan?`, answer: 3, level: 0 },
+  { text: `Je hebt 3 appels en krijgt er 4 bij. Hoeveel appels heb je nu?`, answer: 7, level: 0 },
+  { text: `Er zitten 8 vogels in een boom. 3 vogels vliegen weg. Hoeveel vogels blijven er in de boom?`, answer: 5, level: 0 },
+  { text: `Je hebt 9 potloden. Je verliest er 3. Hoeveel potloden heb je nog over?`, answer: 6, level: 0 },
+  { text: `Als je 2 euro zakgeld krijgt en je koopt een ijsje van 1 euro, hoeveel geld houd je over?`, answer: 1, level: 0 },
+  { text: `Je hebt 4 rode en 5 blauwe lego-blokjes. Hoeveel blokjes heb je in totaal?`, answer: 9, level: 0 },
+  { text: `Je hebt 10 snoepjes en geeft 2 aan je broertje en 2 aan je zusje. Hoeveel snoepjes houd je zelf?`, answer: 6, level: 0 },
+  { text: `Als je op de Rietendakschool 3 vrienden hebt en thuis in Utrecht nog 5, hoeveel vrienden heb je dan in totaal?`, answer: 8, level: 0 },
+  { text: `Je hebt 2 rode ballonnen en 5 blauwe ballonnen. Hoeveel ballonnen heb je in totaal?`, answer: 7, level: 0 },
+  { text: `Er liggen 10 koekjes op tafel. Je eet er 4 op. Hoeveel koekjes blijven er over?`, answer: 6, level: 0 },
+  { text: `Je hebt 3 euro en krijgt 5 euro van oma. Hoeveel euro heb je nu?`, answer: 8, level: 0 },
+  { text: `Er zitten 6 kinderen in een bus. Bij de halte stappen 2 kinderen uit. Hoeveel kinderen zitten er nog in de bus?`, answer: 4, level: 0 },
+  { text: `Je hebt 7 stickers. Je geeft er 3 aan je vriend. Hoeveel stickers houd je over?`, answer: 4, level: 0 },
+];
+
+// Niveau 1 (Blauwe piste): antwoorden tussen 11-20
+const LEVEL1_QUESTIONS: LevelQuestion[] = [
+  { text: `${CHILD_NAME}, hoeveel is 4 tafels van 5?`, answer: 20, level: 1 },
+  { text: `Als je 15 knikkers hebt en je geeft er 7 aan Joep, hoeveel houd je zelf over?`, answer: 8, level: 1 },
+  { text: `Er staan 7 koeien in de wei. Er komen 5 koeien bij. Hoeveel koeien staan er nu in de wei?`, answer: 12, level: 1 },
+  { text: `In een doos zitten 6 rode en 7 blauwe ballen. Hoeveel ballen zitten er in totaal in de doos?`, answer: 13, level: 1 },
+  { text: `In de klas zitten 8 jongens en 9 meisjes. Hoeveel kinderen zitten er in totaal in de klas?`, answer: 17, level: 1 },
+  { text: `Je hebt 12 kleurpotloden. Je leent er 2 uit aan je vriend. Hoeveel kleurpotloden heb je nog over?`, answer: 10, level: 1 },
+  { text: `Er staan 15 glazen op tafel. 4 glazen vallen en breken. Hoeveel glazen blijven er heel?`, answer: 11, level: 1 },
+  { text: `Je hebt 7 euro. Een boek kost 14 euro. Hoeveel euro kom je tekort?`, answer: 7, level: 1 },
+  { text: `Er zitten 20 kinderen in de klas. 6 kinderen zijn ziek. Hoeveel kinderen zijn er op school?`, answer: 14, level: 1 },
+];
+
+// Niveau 2 (Rode piste): antwoorden tussen 21-50
+const LEVEL2_QUESTIONS: LevelQuestion[] = [
+  { text: `${CHILD_NAME}, hoeveel leerlingen zitten er in je klas als er 14 jongens en 12 meisjes zijn?`, answer: 26, level: 2 },
+  { text: `Als je op de Rietendakschool om half 9 begint en om 3 uur uit bent, hoeveel uur zit je dan op school?`, answer: 6, level: 2 },
+  { text: `Een voetbalteam heeft 11 spelers. Hoeveel spelers hebben 2 teams samen?`, answer: 22, level: 2 },
+  { text: `Een boek heeft 42 pagina's. Je hebt al 15 pagina's gelezen. Hoeveel pagina's moet je nog lezen?`, answer: 27, level: 2 },
+  { text: `In een bioscoop zijn 50 stoelen. Er zijn 32 mensen binnen. Hoeveel stoelen zijn er nog vrij?`, answer: 18, level: 2 },
+  { text: `Een doos met 24 ijsjes kost 36 euro. Hoeveel kosten 8 ijsjes?`, answer: 12, level: 2 },
+  { text: `Je spaart voor een spelcomputer van 50 euro. Je hebt al 25 euro gespaard. Hoeveel euro heb je nog nodig?`, answer: 25, level: 2 },
+];
+
+// Niveau 3 (Zwarte piste): antwoorden tussen 51-100
+const LEVEL3_QUESTIONS: LevelQuestion[] = [
+  { text: `Als oma Marja 68 jaar is en jij bent 7, hoeveel jaar is oma Marja ouder dan jij?`, answer: 61, level: 3 },
+  { text: `Een trein heeft 8 wagons met elk 9 zitplaatsen. Hoeveel zitplaatsen zijn er in totaal?`, answer: 72, level: 3 },
+  { text: `Een boek heeft 100 pagina's. Je hebt al 35 pagina's gelezen. Hoeveel pagina's moet je nog lezen?`, answer: 65, level: 3 },
+  { text: `Een school heeft 3 groepen met elk 18 leerlingen. Hoeveel leerlingen zitten er in totaal op de school?`, answer: 54, level: 3 },
+  { text: `Een auto rijdt 90 kilometer per uur. Hoeveel kilometer rijdt de auto in een half uur?`, answer: 45, level: 3 },
+  { text: `Een grote doos bevat 6 kleine dozen. In elke kleine doos zitten 12 potloden. Hoeveel potloden zitten er in totaal in de grote doos?`, answer: 72, level: 3 },
+];
+
+// Niveau 4 (Off-piste): moeilijkere vragen
+const LEVEL4_QUESTIONS: LevelQuestion[] = [
+  { text: `Een bakker bakt 120 broden. Hij verkoopt er 85. Hoeveel broden heeft hij over?`, answer: 35, level: 4 },
+  { text: `Een trein vertrekt om 14:45 uur en komt aan om 16:30 uur. Hoe lang duurt de reis in minuten?`, answer: 105, level: 4 },
+  { text: `Een boer heeft 48 koeien. Hij koopt er 25 bij en verkoopt er 18. Hoeveel koeien heeft hij nu?`, answer: 55, level: 4 },
+  { text: `Een school heeft 4 groepen met elk 22 leerlingen. Hoeveel leerlingen zitten er in totaal op de school?`, answer: 88, level: 4 },
+  { text: `Een fietser rijdt 20 kilometer per uur. Hoeveel kilometer fietst hij in 4,5 uur?`, answer: 90, level: 4 },
+];
+
+// Alle vragen samengevoegd
+const ALL_TEXT_QUESTIONS: LevelQuestion[] = [
+  ...LEVEL0_QUESTIONS,
+  ...LEVEL1_QUESTIONS,
+  ...LEVEL2_QUESTIONS,
+  ...LEVEL3_QUESTIONS,
+  ...LEVEL4_QUESTIONS
 ];
 
 export default function Game() {
@@ -111,7 +127,7 @@ export default function Game() {
   const [skierSkill, setSkierSkill] = useState(0);
   
   // Vraag state
-  const [question, setQuestion] = useState<Question | null>(null);
+  const [question, setQuestion] = useState<LevelQuestion | null>(null);
   const [options, setOptions] = useState<string[]>([]);
   const [correctAnswer, setCorrectAnswer] = useState<string>("");
   const [isTextQuestion, setIsTextQuestion] = useState(false);
@@ -179,52 +195,54 @@ export default function Game() {
     const isTextQuestionLocal = Math.random() < textQuestionChance;
     console.log(`Kans op tekstsom: ${(textQuestionChance * 100).toFixed(1)}%, Resultaat: ${isTextQuestionLocal ? 'Tekstsom' : 'Normale som'}`);
     
-    let newQuestion: Question;
+    let newQuestion: LevelQuestion;
     
     if (isTextQuestionLocal) {
-      // Kies een tekstsom uit de PERSONAL_QUESTIONS array
-      let availableQuestions = PERSONAL_QUESTIONS.filter(q => !usedQuestions.includes(q.text));
+      // Kies een tekstsom die past bij het huidige niveau
+      let availableQuestions = ALL_TEXT_QUESTIONS.filter(q => 
+        !usedQuestions.includes(q.text) && q.level === level
+      );
       
-      // Verdeel de vragen over de niveaus
-      let levelQuestions: Question[] = [];
-      
-      if (level === 0) { // Beginnershelling: antwoorden <= 10
-        levelQuestions = availableQuestions.filter(q => q.answer <= 10);
-      } else if (level === 1) { // Blauwe piste: antwoorden tussen 11-20
-        levelQuestions = availableQuestions.filter(q => q.answer > 10 && q.answer <= 20);
-      } else if (level === 2) { // Rode piste: antwoorden tussen 21-50
-        levelQuestions = availableQuestions.filter(q => q.answer > 20 && q.answer <= 50);
-      } else if (level === 3) { // Zwarte piste: antwoorden tussen 51-100
-        levelQuestions = availableQuestions.filter(q => q.answer > 50 && q.answer <= 100);
-      } else { // Off-piste: alle overige vragen
-        levelQuestions = availableQuestions;
+      // Als er geen vragen meer zijn voor dit niveau, reset de gebruikte vragen
+      if (availableQuestions.length === 0) {
+        console.log(`Geen ongebruikte tekstvragen meer voor niveau ${level}, reset gebruikte vragen`);
+        setUsedQuestions([]);
+        availableQuestions = ALL_TEXT_QUESTIONS.filter(q => q.level === level);
       }
       
-      // Als er geen geschikte vragen zijn, reset de gebruikte vragen
-      if (levelQuestions.length === 0) {
-        setUsedQuestions([]);
-        availableQuestions = PERSONAL_QUESTIONS;
-        
-        // Pas filtering opnieuw toe
-        if (level === 0) {
-          levelQuestions = availableQuestions.filter(q => q.answer <= 10);
-        } else if (level === 1) {
-          levelQuestions = availableQuestions.filter(q => q.answer > 10 && q.answer <= 20);
-        } else if (level === 2) {
-          levelQuestions = availableQuestions.filter(q => q.answer > 20 && q.answer <= 50);
-        } else if (level === 3) {
-          levelQuestions = availableQuestions.filter(q => q.answer > 50 && q.answer <= 100);
-        } else {
-          levelQuestions = availableQuestions;
+      // Als er nog steeds geen vragen zijn voor dit niveau, gebruik vragen van een lager niveau
+      if (availableQuestions.length === 0) {
+        console.log(`Geen tekstvragen beschikbaar voor niveau ${level}, probeer lager niveau`);
+        for (let l = level - 1; l >= 0; l--) {
+          const lowerLevelQuestions = ALL_TEXT_QUESTIONS.filter(q => q.level === l);
+          if (lowerLevelQuestions.length > 0) {
+            availableQuestions = lowerLevelQuestions;
+            console.log(`Gebruik tekstvragen van niveau ${l}`);
+            break;
+          }
+        }
+      }
+      
+      // Als er nog steeds geen vragen zijn, gebruik vragen van een hoger niveau
+      if (availableQuestions.length === 0) {
+        console.log(`Geen tekstvragen beschikbaar voor lagere niveaus, probeer hoger niveau`);
+        for (let l = level + 1; l < DIFFICULTY_LEVELS.length; l++) {
+          const higherLevelQuestions = ALL_TEXT_QUESTIONS.filter(q => q.level === l);
+          if (higherLevelQuestions.length > 0) {
+            availableQuestions = higherLevelQuestions;
+            console.log(`Gebruik tekstvragen van niveau ${l}`);
+            break;
+          }
         }
       }
       
       // Als er nog steeds geen vragen zijn, gebruik een willekeurige vraag
-      if (levelQuestions.length === 0) {
-        levelQuestions = availableQuestions;
+      if (availableQuestions.length === 0) {
+        console.log("Geen tekstvragen beschikbaar voor specifieke niveaus, gebruik willekeurige vraag");
+        availableQuestions = ALL_TEXT_QUESTIONS;
       }
       
-      const personalQuestion = levelQuestions[Math.floor(Math.random() * levelQuestions.length)];
+      const personalQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
       newQuestion = personalQuestion;
       setUsedQuestions(prev => [...prev, personalQuestion.text]);
       setIsTextQuestion(true);
@@ -268,7 +286,7 @@ export default function Game() {
       const operationSymbol = operation === 'x' ? '×' : operation;
       const questionText = `${num1} ${operationSymbol} ${num2}`;
       
-      newQuestion = { text: questionText, answer };
+      newQuestion = { text: questionText, answer, level };
       setIsTextQuestion(false);
       
       // Normale tijd voor gewone sommen
@@ -399,30 +417,35 @@ export default function Game() {
       
       // Bepaal of er een aanmoediging moet komen
       if (!showEncouragement && !showFamilyEncouragement && !showPhotoReward) {
-        // 1. Muntjesmijlpaal bereikt
-        if (coins > 0 && (coins + earnedCoins) % 50 < earnedCoins) {
-          showPhotoEncouragementUI(`Je hebt ${coins + earnedCoins} muntjes verzameld! Je bent een echte rekenheld!`);
-          showEncouragement = true;
-        } 
-        // 2. Reeks van 10 bereikt
-        else if (newStreak % 10 === 0) {
-          showPhotoEncouragementUI(`Je hebt ${newStreak} vragen goed beantwoord op rij!`);
-          showEncouragement = true;
-        }
-        // 3. Nieuw skiërsniveau bereikt
-        else if (newStreak % 5 === 0 && skierSkill < 4) {
-          showFamilyEncouragementUI('streak');
-          showEncouragement = true;
-        }
-        // 4. Niveau omhoog
-        else if (newStreak % 10 === 0 && level < DIFFICULTY_LEVELS.length - 1) {
-          showFamilyEncouragementUI('level');
-          showEncouragement = true;
-        }
-        // 5. Uitzonderlijk snel antwoord (alleen af en toe)
-        else if ((isExceptionallyFast || isMuchFasterThanAverage) && Math.random() < 0.3) {
-          showFamilyEncouragementUI('streak');
-          showEncouragement = true;
+        // Verminder de frequentie van aanmoedigingen
+        const shouldShowEncouragement = Math.random() < 0.5; // 50% kans om een aanmoediging te tonen
+        
+        if (shouldShowEncouragement) {
+          // 1. Muntjesmijlpaal bereikt (alleen bij veelvouden van 50)
+          if (coins > 0 && (coins + earnedCoins) % 50 < earnedCoins) {
+            showPhotoEncouragementUI(`Je hebt ${coins + earnedCoins} muntjes verzameld! Je bent een echte rekenheld!`);
+            showEncouragement = true;
+          } 
+          // 2. Reeks van 10 bereikt (alleen bij veelvouden van 10)
+          else if (newStreak % 10 === 0 && newStreak > 0) {
+            showPhotoEncouragementUI(`Je hebt ${newStreak} vragen goed beantwoord op rij!`);
+            showEncouragement = true;
+          }
+          // 3. Nieuw skiërsniveau bereikt (alleen bij veelvouden van 5)
+          else if (newStreak % 5 === 0 && newStreak > 0 && skierSkill < 4) {
+            showFamilyEncouragementUI('streak');
+            showEncouragement = true;
+          }
+          // 4. Niveau omhoog (alleen bij veelvouden van 10)
+          else if (newStreak % 10 === 0 && newStreak > 0 && level < DIFFICULTY_LEVELS.length - 1) {
+            showFamilyEncouragementUI('level');
+            showEncouragement = true;
+          }
+          // 5. Uitzonderlijk snel antwoord (verlaagde kans)
+          else if ((isExceptionallyFast || isMuchFasterThanAverage) && Math.random() < 0.1) {
+            showFamilyEncouragementUI('streak');
+            showEncouragement = true;
+          }
         }
       }
       
