@@ -46,24 +46,24 @@ const DIFFICULTY_LEVELS = [
 // Niveau 0 (Beginnershelling): antwoorden <= 10
 const LEVEL0_QUESTIONS: LevelQuestion[] = [
   { text: `Als jij 7 jaar bent en Joep is 3 jaar jonger, hoeveel is Joep dan?`, answer: 4, level: 0 },
-  { text: `Als papa 42 jaar is en mama 39, hoeveel jaar schelen ze dan?`, answer: 3, level: 0 },
   { text: `Je hebt 3 appels en krijgt er 4 bij. Hoeveel appels heb je nu?`, answer: 7, level: 0 },
   { text: `Er zitten 8 vogels in een boom. 3 vogels vliegen weg. Hoeveel vogels blijven er in de boom?`, answer: 5, level: 0 },
   { text: `Je hebt 9 potloden. Je verliest er 3. Hoeveel potloden heb je nog over?`, answer: 6, level: 0 },
   { text: `Als je 2 euro zakgeld krijgt en je koopt een ijsje van 1 euro, hoeveel geld houd je over?`, answer: 1, level: 0 },
   { text: `Je hebt 4 rode en 5 blauwe lego-blokjes. Hoeveel blokjes heb je in totaal?`, answer: 9, level: 0 },
-  { text: `Je hebt 10 snoepjes en geeft 2 aan je broertje en 2 aan je zusje. Hoeveel snoepjes houd je zelf?`, answer: 6, level: 0 },
   { text: `Als je op de Rietendakschool 3 vrienden hebt en thuis in Utrecht nog 5, hoeveel vrienden heb je dan in totaal?`, answer: 8, level: 0 },
   { text: `Je hebt 2 rode ballonnen en 5 blauwe ballonnen. Hoeveel ballonnen heb je in totaal?`, answer: 7, level: 0 },
-  { text: `Er liggen 10 koekjes op tafel. Je eet er 4 op. Hoeveel koekjes blijven er over?`, answer: 6, level: 0 },
   { text: `Je hebt 3 euro en krijgt 5 euro van oma. Hoeveel euro heb je nu?`, answer: 8, level: 0 },
-  { text: `Er zitten 6 kinderen in een bus. Bij de halte stappen 2 kinderen uit. Hoeveel kinderen zitten er nog in de bus?`, answer: 4, level: 0 },
   { text: `Je hebt 7 stickers. Je geeft er 3 aan je vriend. Hoeveel stickers houd je over?`, answer: 4, level: 0 },
 ];
 
 // Niveau 1 (Blauwe piste): antwoorden tussen 11-20
 const LEVEL1_QUESTIONS: LevelQuestion[] = [
   { text: `${CHILD_NAME}, hoeveel is 4 tafels van 5?`, answer: 20, level: 1 },
+  { text: `Er zitten 6 kinderen in een bus. Bij de halte stappen 2 kinderen uit. Hoeveel kinderen zitten er nog in de bus?`, answer: 4, level: 1 },
+  { text: `Als papa 42 jaar is en mama 39, hoeveel jaar schelen ze dan?`, answer: 3, level: 1 },
+  { text: `Je hebt 10 snoepjes en geeft 2 aan je broertje en 2 aan je zusje. Hoeveel snoepjes houd je zelf?`, answer: 6, level: 1 },
+  { text: `Er liggen 10 koekjes op tafel. Je eet er 4 op. Hoeveel koekjes blijven er over?`, answer: 6, level: 1 },
   { text: `Als je 15 knikkers hebt en je geeft er 7 aan Joep, hoeveel houd je zelf over?`, answer: 8, level: 1 },
   { text: `Er staan 7 koeien in de wei. Er komen 5 koeien bij. Hoeveel koeien staan er nu in de wei?`, answer: 12, level: 1 },
   { text: `In een doos zitten 6 rode en 7 blauwe ballen. Hoeveel ballen zitten er in totaal in de doos?`, answer: 13, level: 1 },
@@ -77,7 +77,6 @@ const LEVEL1_QUESTIONS: LevelQuestion[] = [
 // Niveau 2 (Rode piste): antwoorden tussen 21-50
 const LEVEL2_QUESTIONS: LevelQuestion[] = [
   { text: `${CHILD_NAME}, hoeveel leerlingen zitten er in je klas als er 14 jongens en 12 meisjes zijn?`, answer: 26, level: 2 },
-  { text: `Als je op de Rietendakschool om half 9 begint en om 3 uur uit bent, hoeveel uur zit je dan op school?`, answer: 6, level: 2 },
   { text: `Een voetbalteam heeft 11 spelers. Hoeveel spelers hebben 2 teams samen?`, answer: 22, level: 2 },
   { text: `Een boek heeft 42 pagina's. Je hebt al 15 pagina's gelezen. Hoeveel pagina's moet je nog lezen?`, answer: 27, level: 2 },
   { text: `In een bioscoop zijn 50 stoelen. Er zijn 32 mensen binnen. Hoeveel stoelen zijn er nog vrij?`, answer: 18, level: 2 },
@@ -93,6 +92,7 @@ const LEVEL3_QUESTIONS: LevelQuestion[] = [
   { text: `Een school heeft 3 groepen met elk 18 leerlingen. Hoeveel leerlingen zitten er in totaal op de school?`, answer: 54, level: 3 },
   { text: `Een auto rijdt 90 kilometer per uur. Hoeveel kilometer rijdt de auto in een half uur?`, answer: 45, level: 3 },
   { text: `Een grote doos bevat 6 kleine dozen. In elke kleine doos zitten 12 potloden. Hoeveel potloden zitten er in totaal in de grote doos?`, answer: 72, level: 3 },
+  { text: `Als je op de Rietendakschool om half 9 begint en om half 3 uur uit bent, hoeveel uur zit je dan op school?`, answer: 6, level: 3 },
 ];
 
 // Niveau 4 (Off-piste): moeilijkere vragen
@@ -305,6 +305,27 @@ export default function Game() {
     
     // Genereer 3 unieke verkeerde antwoorden
     while (wrongAnswers.length < 3) {
+      // Met 40% kans, genereer een antwoord met hetzelfde eindcijfer maar ander tiental
+      if (wrongAnswers.length === 0 && Math.random() < 0.4) {
+        // Bepaal het eindcijfer van het correcte antwoord
+        const lastDigit = correctAnswer % 10;
+        
+        // Genereer een antwoord met hetzelfde eindcijfer maar een ander tiental
+        // Kies willekeurig of we een tiental hoger of lager gaan
+        const tenOffset = Math.random() < 0.5 ? 10 : -10;
+        
+        // Bereken het nieuwe antwoord
+        const sameLastDigitWrongAnswer = correctAnswer + tenOffset;
+        
+        // Controleer of het nieuwe antwoord geldig is (niet negatief en niet gelijk aan het correcte antwoord)
+        if (sameLastDigitWrongAnswer >= 0 && sameLastDigitWrongAnswer !== correctAnswer && !wrongAnswers.includes(sameLastDigitWrongAnswer)) {
+          console.log(`Genereer verwarrend antwoord met zelfde eindcijfer: ${sameLastDigitWrongAnswer} (correct: ${correctAnswer})`);
+          wrongAnswers.push(sameLastDigitWrongAnswer);
+          continue;
+        }
+      }
+      
+      // Normale generatie van verkeerde antwoorden
       const offset = Math.floor(Math.random() * 10) - 5;
       const wrongAnswer = correctAnswer + offset;
       
